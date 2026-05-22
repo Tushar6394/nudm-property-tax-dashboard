@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import { CityChartData } from '../types';
+import type { CityChartData } from '../types';
 
 interface DashboardChartsProps {
   data: CityChartData[];

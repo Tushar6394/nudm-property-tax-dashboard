@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ShieldCheck, Calendar, Activity, Sparkles } from 'lucide-react';
 import rawProperties from './properties.json';
-import { Property, DashboardStats, CityChartData } from './types';
+import type { Property, DashboardStats, CityChartData } from './types';
 import { KPICards } from './components/KPICards';
 import { CitySelector } from './components/CitySelector';
 import { DashboardCharts } from './components/DashboardCharts';

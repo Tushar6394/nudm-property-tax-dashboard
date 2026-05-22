@@ -1,6 +1,6 @@
 import React from 'react';
 import { Building2, CheckCircle, XCircle, Coins } from 'lucide-react';
-import { DashboardStats } from '../types';
+import type { DashboardStats } from '../types';
 
 interface KPICardsProps {
   stats: DashboardStats;

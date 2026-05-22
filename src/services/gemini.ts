@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Property } from '../types';
+import type { Property } from '../types';
 
 // Helper to generate an analytical summary of the dataset to feed as context to Gemini
 export const generateDataSummary = (properties: Property[]): string => {

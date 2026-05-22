@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles, AlertCircle } from 'lucide-react';
-import { ChatMessage, Property } from '../types';
+import type { ChatMessage, Property } from '../types';
 import { askGemini } from '../services/gemini';
 
 interface ChatAssistantProps {
