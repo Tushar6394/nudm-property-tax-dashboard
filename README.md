@@ -1,95 +1,73 @@
-# UPYOG Property Tax Analytics Dashboard 🏛️📊
+# React + TypeScript + Vite
 
-Welcome to the **Property Tax Analytics Dashboard** developed for the **UPYOG** multi-tenant civic services platform. 
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-This modern single-page dashboard serves 10 major Indian cities, offering real-time metric analysis, visual comparisons, and a built-in AI conversational assistant powered by Google Gemini to answer questions about the property tax dataset.
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## ✨ Features
+## React Compiler
 
-- **🌐 Multi-Tenant Dropdown Filter:** Toggle seamlessly between `All Cities` or individual cities (Delhi, Mumbai, Bengaluru, Pune, Chennai, Hyderabad, Ahmedabad, Kolkata, Jaipur, Lucknow) to filter all data dynamically.
-- **⚡ Live KPI Indicators:** Real-time updates for:
-  - **Total Properties Registered**
-  - **Total Properties Approved**
-  - **Total Properties Rejected**
-  - **Total Property Tax Collection (INR)**
-- **📈 Visual Analytics & Side-by-Side Comparison:** Responsive bar and pie charts comparing tax collections and statuses across all 10 cities side-by-side.
-- **💬 AI Chat Assistant (Google Gemini):** A contextual conversational chatbox where municipal operators can ask natural language questions (e.g., *"Which city has the highest collection?"* or *"What percentage of properties in Mumbai are rejected?"*) and receive accurate, instant answers.
-- **🎨 Premium Visual Experience:** Immersive Dark Mode visual architecture, dynamic glassmorphic card elements, subtle hover micro-animations, and fluid transitions.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
----
+## Expanding the ESLint configuration
 
-## 🛠️ Technology Stack
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-- **Frontend Core:** React, TypeScript, Vite
-- **Styling:** CSS3 (Modern Flexbox/Grid, CSS Variables, Glassmorphism, Responsive Media Queries)
-- **Charts:** Recharts (Responsive SVG Charts)
-- **AI Integration:** Google Gemini API (`@google/genai` or standard SDK integration)
-- **Icons:** Lucide React
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
----
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-## 🚀 Setup & Installation Instructions
-
-Follow these simple steps to set up and run the dashboard locally:
-
-### 1. Prerequisites
-Ensure you have **Node.js** (v18 or higher) and **npm** installed on your system.
-
-### 2. Clone the Repository
-```bash
-git clone https://github.com/Tushar6394/nudm-property-tax-dashboard.git
-cd nudm-property-tax-dashboard
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-### 3. Install Dependencies
-```bash
-npm install
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-### 4. Configure Environment Variables
-1. Create a `.env` file in the root directory:
-   ```bash
-   touch .env
-   ```
-2. Open `.env` and add your **Google Gemini API Key** (get one free from [Google AI Studio](https://aistudio.google.com/)):
-   ```env
-   VITE_GEMINI_API_KEY=your_gemini_api_key_here
-   ```
-
-> **Note:** The `.env` file is excluded from git tracking via `.gitignore` to keep your credentials secure.
-
-### 5. Launch the Development Server
-Run the following command to start the app:
-```bash
-npm run dev
-```
-Once started, open [http://localhost:5173](http://localhost:5173) in your browser to view the dashboard!
-
----
-
-## 📁 Project Structure
-```text
-├── public/
-│   └── properties.json         # Main property tax dataset
-├── src/
-│   ├── assets/                 # SVGs and static media assets
-│   ├── components/             # Reusable UI components (KPIs, Chat, Charts)
-│   ├── hooks/                  # Custom state hooks for data parsing
-│   ├── services/               # Google Gemini API integration
-│   ├── types.ts                # TypeScript data interfaces
-│   ├── App.tsx                 # Main application dashboard controller
-│   ├── main.tsx                # React virtual DOM injection point
-│   └── index.css               # Core CSS design system and variables
-├── .env                        # Local environment secrets (ignored)
-├── .gitignore                  # Git untracked registry
-├── package.json                # Project manifest and scripts
-├── tsconfig.json               # TypeScript compiler config
-└── vite.config.ts              # Vite bundler configuration
-```
-
----
-
-## 🏛️ About the UPYOG Platform
-**UPYOG** is an open-source, multi-tenant digital platform built to empower Indian urban local bodies (ULBs) and municipalities. It facilitates smooth, scalable citizen service delivery, including property tax collections, trade licenses, water connections, and grievance redressal across diverse states and cities.
