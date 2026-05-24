@@ -217,6 +217,9 @@ function App() {
         <p style={{ marginTop: '4px', color: 'var(--text-muted)' }}>
           Powered by React, TypeScript, Recharts, and Google Gemini AI
         </p>
+        <p style={{ marginTop: '6px', color: 'var(--primary)', fontWeight: 600, fontSize: '0.78rem' }}>
+          Developed By Tushar Singh
+        </p>
       </footer>
     </div>
   );
