@@ -250,9 +250,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: '600px',
     width: '100%',
     overflow: 'hidden',
-    background: 'rgba(13, 20, 38, 0.88)',
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
+    background: '#0d1426',
     border: '1px solid var(--border-color)',
     borderRadius: '16px',
     boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)'
