@@ -336,7 +336,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     gap: '12px',
     alignItems: 'flex-start',
-    maxWidth: '85%'
+    width: '100%'
   },
   avatar: {
     width: '28px',
@@ -352,7 +352,9 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '16px',
     fontSize: '0.85rem',
     lineHeight: 1.5,
-    color: 'var(--text-primary)'
+    color: 'var(--text-primary)',
+    maxWidth: '75%',
+    wordBreak: 'break-word'
   },
   typingBubble: {
     padding: '12px 16px',
