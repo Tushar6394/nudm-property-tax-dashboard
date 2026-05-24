@@ -118,6 +118,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
   filteredProperties
 }) => {
 
+  const [activePieIndex, setActivePieIndex] = React.useState<number | null>(null);
+
   // Dynamic Property Type distribution calculation for the selected city or global combined platform
   const propertyTypeData = React.useMemo(() => {
     const types = ['Residential', 'Commercial', 'Industrial', 'Agricultural', 'Mixed Use'];
@@ -297,6 +299,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
                   paddingAngle={5}
                   dataKey="value"
                   animationDuration={800}
+                  onMouseEnter={(_, index) => setActivePieIndex(index)}
+                  onMouseLeave={() => setActivePieIndex(null)}
                 >
                   {propertyTypeData.map((entry, index) => (
                     <Cell 
@@ -308,10 +312,12 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
                 <Tooltip content={<CustomPieTooltip />} />
               </PieChart>
             </ResponsiveContainer>
-            <div style={styles.donutCenterLabel}>
-              <span style={styles.donutCenterNum}>{filteredProperties.length}</span>
-              <span style={styles.donutCenterText}>Properties</span>
-            </div>
+            {activePieIndex === null && (
+              <div style={styles.donutCenterLabel}>
+                <span style={styles.donutCenterNum}>{filteredProperties.length}</span>
+                <span style={styles.donutCenterText}>Properties</span>
+              </div>
+            )}
           </div>
           
           <div style={styles.donutLegendGrid}>
