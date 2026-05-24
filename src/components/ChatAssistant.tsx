@@ -121,7 +121,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
   };
 
   return (
-    <div style={styles.chatContainer} className="glass-panel">
+    <div style={styles.chatContainer}>
       <div style={styles.chatHeader}>
         <div style={styles.headerInfo}>
           <div style={styles.avatarGlow}>
@@ -249,7 +249,11 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     height: '520px',
     width: '100%',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    background: '#0c1224',
+    border: '1px solid var(--border-color)',
+    borderRadius: '16px',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)'
   },
   headerRightActions: {
     display: 'flex',
