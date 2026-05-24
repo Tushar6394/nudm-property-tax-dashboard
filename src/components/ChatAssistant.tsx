@@ -5,27 +5,53 @@ import { askGemini } from '../services/gemini';
 
 interface ChatAssistantProps {
   properties: Property[];
+  selectedCity: string;
 }
 
-export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      sender: 'ai',
-      text: 'Namaste! I am the **UPYOG Intelligent Property Tax Assistant**. Ask me any analytical question about the 1,000 property records across our 10 municipalities!',
-      timestamp: new Date()
-    }
-  ]);
+// Static initial welcome message defined outside component to avoid impure new Date() calls during render
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: 'welcome',
+    sender: 'ai',
+    text: 'Namaste! I am the **UPYOG Intelligent Property Tax Assistant**. Ask me any analytical question about the 1,000 property records across our 10 municipalities!',
+    timestamp: new Date()
+  }
+];
+
+// Helper to create a chat message defined outside to keep the main component pure
+const createChatMessage = (sender: 'user' | 'ai', text: string): ChatMessage => {
+  return {
+    id: `${sender}-${Math.random().toString(36).substring(2, 11)}-${Date.now()}`,
+    sender,
+    text,
+    timestamp: new Date()
+  };
+};
+
+export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const presetQuestions = [
-    { label: 'Highest tax collection?', text: 'Which city has the highest tax collection?' },
-    { label: 'Mumbai rejections?', text: 'How many properties are rejected in Mumbai?' },
-    { label: 'Bengaluru approval %', text: 'What is the percentage of approved properties in Bengaluru?' },
-    { label: 'Compare Pune vs Jaipur', text: 'Compare total registrations between Pune and Jaipur' }
-  ];
+  // Dynamic context-aware preset questions based on selected city
+  const presetQuestions = React.useMemo(() => {
+    if (selectedCity === 'All Cities') {
+      return [
+        { label: 'Highest tax collection?', text: 'Which city has the highest tax collection?' },
+        { label: 'Mumbai rejections?', text: 'How many properties are rejected in Mumbai?' },
+        { label: 'Bengaluru approval %', text: 'What is the percentage of approved properties in Bengaluru?' },
+        { label: 'Compare Pune vs Jaipur', text: 'Compare total registrations between Pune and Jaipur' }
+      ];
+    }
+
+    return [
+      { label: `Rejections here?`, text: `How many properties are rejected in ${selectedCity}?` },
+      { label: `Approval % here?`, text: `What is the percentage of approved properties in ${selectedCity}?` },
+      { label: `Total collection here?`, text: `What is the total tax collection in ${selectedCity}?` },
+      { label: 'Highest tax collection?', text: 'Which city has the highest tax collection?' }
+    ];
+  }, [selectedCity]);
 
   // Scroll to bottom on new message
   useEffect(() => {
@@ -35,25 +61,15 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties }) => {
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim()) return;
 
-    const userMsg: ChatMessage = {
-      id: `user-${Date.now()}`,
-      sender: 'user',
-      text: textToSend,
-      timestamp: new Date()
-    };
+    const userMsg = createChatMessage('user', textToSend);
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
     try {
-      const responseText = await askGemini(textToSend, properties);
-      const aiMsg: ChatMessage = {
-        id: `ai-${Date.now()}`,
-        sender: 'ai',
-        text: responseText,
-        timestamp: new Date()
-      };
+      const responseText = await askGemini(textToSend, properties, selectedCity);
+      const aiMsg = createChatMessage('ai', responseText);
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err) {
       console.error(err);

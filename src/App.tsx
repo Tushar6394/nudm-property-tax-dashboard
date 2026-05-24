@@ -126,7 +126,11 @@ function App() {
         <div style={styles.dashboardGrid}>
           {/* Charts Column */}
           <div style={styles.chartsCol}>
-            <DashboardCharts data={chartData} />
+            <DashboardCharts
+              data={chartData}
+              selectedCity={selectedCity}
+              filteredProperties={filteredProperties}
+            />
           </div>
 
           {/* Chat Assistant Column */}
@@ -140,7 +144,7 @@ function App() {
                 Inquire about complex breakdowns, ratios, registrations, and collections using the smart local AI assistant or Google Gemini.
               </p>
             </div>
-            <ChatAssistant properties={properties} />
+            <ChatAssistant properties={properties} selectedCity={selectedCity} />
           </div>
         </div>
       </main>

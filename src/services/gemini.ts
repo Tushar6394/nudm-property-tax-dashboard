@@ -1,6 +1,15 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { Property } from '../types';
 
+// Helper to format detailed full currency (e.g. ₹2,40,000)
+const formatFullCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0
+  }).format(value);
+};
+
 // Helper to generate an analytical summary of the dataset to feed as context to Gemini
 export const generateDataSummary = (properties: Property[]): string => {
   const total = properties.length;
@@ -70,7 +79,7 @@ ${breakdownStr}
 };
 
 // Fallback dynamic local AI engine to answer common questions if API key is not yet set up
-const localAiFallback = (question: string, properties: Property[]): string => {
+const localAiFallback = (question: string, properties: Property[], selectedCity: string): string => {
   const q = question.toLowerCase();
   
   // Group statistics by city
@@ -97,6 +106,20 @@ const localAiFallback = (question: string, properties: Property[]): string => {
 
   const cities = Object.keys(cityStats);
 
+  // Identify if a city is explicitly mentioned in the query
+  let mentionedCity = '';
+  for (const city of cities) {
+    if (q.includes(city.toLowerCase())) {
+      mentionedCity = city;
+      break;
+    }
+  }
+
+  // Handle local context references: "here", "this city", "our", "current"
+  if (!mentionedCity && selectedCity !== 'All Cities' && (q.includes('here') || q.includes('this') || q.includes('our') || q.includes('local') || q.includes('current'))) {
+    mentionedCity = selectedCity;
+  }
+
   // 1. Highest collection query
   if (q.includes('highest') && (q.includes('collection') || q.includes('tax') || q.includes('collected'))) {
     let topCity = '';
@@ -110,21 +133,17 @@ const localAiFallback = (question: string, properties: Property[]): string => {
     return `According to the live UPYOG dataset, **${topCity}** has the highest total property tax collection, with a grand total of **₹${maxColl.toLocaleString('en-IN', { maximumFractionDigits: 2 })}** collected.`;
   }
 
-  // 2. Count rejected in specific city (e.g. rejected in Mumbai)
-  for (const city of cities) {
-    if (q.includes('rejected') && q.includes(city.toLowerCase())) {
-      const count = cityStats[city].rejected;
-      return `There are currently **${count}** rejected properties in **${city}** Municipality out of ${cityStats[city].registered} total registrations.`;
-    }
+  // 2. Count rejected in specific city (e.g. rejected in Mumbai / rejected here)
+  if (q.includes('rejected') && mentionedCity) {
+    const count = cityStats[mentionedCity].rejected;
+    return `There are currently **${count}** rejected properties in **${mentionedCity}** Municipality out of ${cityStats[mentionedCity].registered} total registrations.`;
   }
 
-  // 3. Count approved percentage (e.g. percentage approved in Delhi)
-  for (const city of cities) {
-    if ((q.includes('percent') || q.includes('%')) && q.includes('approved') && q.includes(city.toLowerCase())) {
-      const stats = cityStats[city];
-      const percentage = (stats.approved / stats.registered) * 100;
-      return `In **${city}**, **${percentage.toFixed(1)}%** of properties are approved (${stats.approved} approved out of ${stats.registered} total registrations).`;
-    }
+  // 3. Count approved percentage (e.g. percentage approved in Delhi / approved here)
+  if ((q.includes('percent') || q.includes('%')) && q.includes('approved') && mentionedCity) {
+    const stats = cityStats[mentionedCity];
+    const percentage = (stats.approved / stats.registered) * 100;
+    return `In **${mentionedCity}**, **${percentage.toFixed(1)}%** of properties are approved (${stats.approved} approved out of ${stats.registered} total registrations).`;
   }
 
   // 4. City with most pending properties
@@ -149,9 +168,20 @@ const localAiFallback = (question: string, properties: Property[]): string => {
     return `Comparing registration volumes:\n* **Pune Municipality**: ${statsPune.registered} properties registered\n* **Jaipur Municipality**: ${statsJaipur.registered} properties registered\n\n**${larger}** has a higher volume by **${diff}** properties.`;
   }
 
+  // 6. Support for total collection of a specific city (e.g. collection in Chennai)
+  if ((q.includes('collection') || q.includes('collected') || q.includes('tax')) && mentionedCity) {
+    const stats = cityStats[mentionedCity];
+    return `The total property tax collection for **${mentionedCity}** Municipality is **${formatFullCurrency(stats.collection)}** across ${stats.registered} registered properties.`;
+  }
+
   // Generic fallback summary answer
   const totalCollection = properties.reduce((acc, p) => acc + p.collection_inr, 0);
-  return `I am currently operating in **demo mode** (using local analytical algorithms). Here is a snapshot of the live platform data:
+  let modeMsg = `I am currently operating in **demo mode** (using local analytical algorithms).`;
+  if (selectedCity !== 'All Cities') {
+    modeMsg += ` You are currently viewing **${selectedCity}** Municipality on the dashboard.`;
+  }
+  
+  return `${modeMsg} Here is a snapshot of the live platform data:
 - **Total Registrations:** 1,000 properties across 10 municipalities.
 - **Global Collection:** ₹${totalCollection.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
 - **Status Split:** ${properties.filter(p => p.status === 'Approved').length} Approved, ${properties.filter(p => p.status === 'Rejected').length} Rejected, and ${properties.filter(p => p.status === 'Pending').length} Pending.
@@ -160,13 +190,13 @@ const localAiFallback = (question: string, properties: Property[]): string => {
 };
 
 // Main API interface
-export const askGemini = async (question: string, properties: Property[]): Promise<string> => {
+export const askGemini = async (question: string, properties: Property[], selectedCity: string): Promise<string> => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   if (!apiKey || apiKey === 'your_gemini_api_key_here') {
     // Artificial latency for premium typing feel
     await new Promise((resolve) => setTimeout(resolve, 800));
-    return localAiFallback(question, properties);
+    return localAiFallback(question, properties, selectedCity);
   }
 
   try {
@@ -178,6 +208,9 @@ export const askGemini = async (question: string, properties: Property[]): Promi
     const systemPrompt = `
 You are the official UPYOG Property Tax Analytics Assistant, an advanced semantic AI module built directly into the civic dashboard.
 You have access to a live statistical summary of 1,000 properties across 10 Indian cities (tenants).
+
+Currently Selected City on the Dashboard: ${selectedCity}
+(If the user's question uses words like "here", "our city", "this municipality", "current city", or refers to local statistics without naming the city, resolve it to the currently selected city: ${selectedCity}).
 
 Here is the live data summary:
 ${dataSummary}
@@ -197,8 +230,9 @@ Your Guidelines:
 
     const response = await result.response;
     return response.text().trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : 'Failed to generate response.';
     console.error('Error calling Gemini API:', error);
-    return `⚠️ **Gemini API Error:** ${error.message || 'Failed to generate response.'} \n\n*Falling back to local data analyzer:* \n\n${localAiFallback(question, properties)}`;
+    return `⚠️ **Gemini API Error:** ${errMsg} \n\n*Falling back to local data analyzer:* \n\n${localAiFallback(question, properties, selectedCity)}`;
   }
 };
