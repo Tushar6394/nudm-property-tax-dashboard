@@ -26,6 +26,36 @@ const citiesList = [
 function App() {
   const [selectedCity, setSelectedCity] = useState<string>('All Cities');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatWidth, setChatWidth] = useState(440);
+  const [chatHeight, setChatHeight] = useState(600);
+
+  // Drag-to-resize mouse logic for fixed bottom-right layout
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = chatWidth;
+    const startHeight = chatHeight;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaX = startX - moveEvent.clientX;
+      const deltaY = startY - moveEvent.clientY;
+      
+      const newWidth = Math.max(360, Math.min(800, startWidth + deltaX));
+      const newHeight = Math.max(450, Math.min(850, startHeight + deltaY));
+      
+      setChatWidth(newWidth);
+      setChatHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   // 1. Filtered subset for KPI cards and specific details
   const filteredProperties = useMemo(() => {
@@ -136,12 +166,28 @@ function App() {
         <div
           style={{
             ...styles.floatingChatContainer,
+            width: `${chatWidth}px`,
+            height: `${chatHeight}px`,
             opacity: isChatOpen ? 1 : 0,
             visibility: isChatOpen ? 'visible' : 'hidden',
             transform: isChatOpen ? 'translateY(0)' : 'translateY(16px)',
             pointerEvents: isChatOpen ? 'auto' : 'none'
           }}
         >
+          {/* Top-Left Drag Resize Handle */}
+          {isChatOpen && (
+            <div
+              onMouseDown={handleResizeMouseDown}
+              style={styles.resizeHandle}
+              title="Drag to resize chatbot"
+            >
+              {/* Sleek diagonal indicator icon */}
+              <svg width="8" height="8" viewBox="0 0 8 8" style={{ opacity: 0.4 }}>
+                <path d="M6 0 L8 2 L2 8 L0 6 Z M3 0 L5 2 L2 5 L0 3 Z M0 0 L2 2 L2 2 L0 0 Z" fill="var(--text-secondary)" />
+              </svg>
+            </div>
+          )}
+
           <ChatAssistant
             properties={properties}
             selectedCity={selectedCity}
@@ -282,14 +328,28 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'fixed',
     bottom: '100px',
     right: '30px',
-    width: '440px',
-    height: '600px',
     zIndex: 9998,
     borderRadius: '16px',
     overflow: 'hidden',
     boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
-    transition: 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
+    transition: 'opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
     willChange: 'transform, opacity'
+  },
+  resizeHandle: {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '18px',
+    height: '18px',
+    cursor: 'nwse-resize',
+    zIndex: 99999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255, 255, 255, 0.05)',
+    borderBottomRightRadius: '8px',
+    borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
   },
   floatingTriggerBtn: {
     position: 'fixed',
