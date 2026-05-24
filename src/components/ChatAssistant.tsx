@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, AlertCircle } from 'lucide-react';
+import { Send, Bot, User, Sparkles, AlertCircle, X } from 'lucide-react';
 import type { ChatMessage, Property } from '../types';
 import { askGemini } from '../services/gemini';
 
 interface ChatAssistantProps {
   properties: Property[];
   selectedCity: string;
+  onClose?: () => void;
 }
 
 // Static initial welcome message defined outside component to avoid impure new Date() calls during render
@@ -28,7 +29,7 @@ const createChatMessage = (sender: 'user' | 'ai', text: string): ChatMessage => 
   };
 };
 
-export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity }) => {
+export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -110,9 +111,16 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
             <span style={styles.headerSubtitle}>Real-time Municipal Assistant</span>
           </div>
         </div>
-        <div style={styles.sparkleContainer}>
-          <Sparkles size={14} color="var(--primary)" />
-          <span style={styles.sparkleLabel}>Gemini 1.5 Flash Active</span>
+        <div style={styles.headerRightActions}>
+          <div style={styles.sparkleContainer}>
+            <Sparkles size={14} color="var(--primary)" />
+            <span style={styles.sparkleLabel}>Gemini 1.5 Flash Active</span>
+          </div>
+          {onClose && (
+            <button onClick={onClose} style={styles.closeBtn} className="close-btn-hover">
+              <X size={18} color="var(--text-secondary)" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -223,6 +231,23 @@ const styles: Record<string, React.CSSProperties> = {
     height: '520px',
     width: '100%',
     overflow: 'hidden'
+  },
+  headerRightActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px'
+  },
+  closeBtn: {
+    background: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid var(--border-color)',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '6px',
+    borderRadius: '8px',
+    transition: 'all 0.2s ease',
+    outline: 'none'
   },
   chatHeader: {
     padding: '16px 20px',

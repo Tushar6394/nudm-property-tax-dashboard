@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ShieldCheck, Calendar, Activity, Sparkles } from 'lucide-react';
+import { ShieldCheck, Calendar, Activity, Bot, X } from 'lucide-react';
 import rawProperties from './properties.json';
 import type { Property, DashboardStats, CityChartData } from './types';
 import { KPICards } from './components/KPICards';
@@ -25,6 +25,7 @@ const citiesList = [
 
 function App() {
   const [selectedCity, setSelectedCity] = useState<string>('All Cities');
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // 1. Filtered subset for KPI cards and specific details
   const filteredProperties = useMemo(() => {
@@ -122,31 +123,39 @@ function App() {
         {/* Reactive KPI Cards */}
         <KPICards stats={stats} />
 
-        {/* Split Grid for Charts & Chat Assistant */}
-        <div style={styles.dashboardGrid}>
-          {/* Charts Column */}
-          <div style={styles.chartsCol}>
-            <DashboardCharts
-              data={chartData}
+        {/* Full-width Charts Deck (gives maximum breadth and beauty) */}
+        <div style={styles.chartsFullContainer}>
+          <DashboardCharts
+            data={chartData}
+            selectedCity={selectedCity}
+            filteredProperties={filteredProperties}
+          />
+        </div>
+
+        {/* Floating ChatAssistant Widget Card */}
+        {isChatOpen && (
+          <div style={styles.floatingChatContainer} className="slide-up">
+            <ChatAssistant
+              properties={properties}
               selectedCity={selectedCity}
-              filteredProperties={filteredProperties}
+              onClose={() => setIsChatOpen(false)}
             />
           </div>
+        )}
 
-          {/* Chat Assistant Column */}
-          <div style={styles.chatCol}>
-            <div style={styles.chatHeaderWrapper}>
-              <h3 style={styles.chatColTitle}>
-                <Sparkles size={18} color="var(--primary)" />
-                Semantic Knowledge Engine
-              </h3>
-              <p style={styles.chatColDesc}>
-                Inquire about complex breakdowns, ratios, registrations, and collections using the smart local AI assistant or Google Gemini.
-              </p>
-            </div>
-            <ChatAssistant properties={properties} selectedCity={selectedCity} />
-          </div>
-        </div>
+        {/* Floating Circle Button Trigger */}
+        <button
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          style={{
+            ...styles.floatingTriggerBtn,
+            background: isChatOpen ? 'var(--danger)' : 'var(--primary)',
+            boxShadow: isChatOpen ? '0 8px 32px var(--danger-glow)' : '0 8px 32px var(--primary-glow)'
+          }}
+          className="pulse-border"
+          title="Open AI Tenant Copilot"
+        >
+          {isChatOpen ? <X size={24} color="#060913" /> : <Bot size={24} color="#060913" />}
+        </button>
       </main>
 
       {/* Dashboard Footer */}
@@ -258,41 +267,34 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: '4px',
     fontWeight: 500
   },
-  dashboardGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 360px',
-    gap: '28px',
-    alignItems: 'start',
+  chartsFullContainer: {
     width: '100%',
     marginBottom: '32px'
   },
-  chartsCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%'
+  floatingChatContainer: {
+    position: 'fixed',
+    bottom: '100px',
+    right: '30px',
+    width: '380px',
+    zIndex: 9998,
+    borderRadius: '16px',
+    overflow: 'hidden',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)'
   },
-  chatCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    gap: '16px'
-  },
-  chatHeaderWrapper: {
-    padding: '0 4px'
-  },
-  chatColTitle: {
-    fontSize: '1.1rem',
-    fontWeight: 700,
-    color: 'var(--text-primary)',
+  floatingTriggerBtn: {
+    position: 'fixed',
+    bottom: '30px',
+    right: '30px',
+    width: '56px',
+    height: '56px',
+    borderRadius: '50%',
+    border: 'none',
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    marginBottom: '6px'
-  },
-  chatColDesc: {
-    fontSize: '0.8rem',
-    color: 'var(--text-secondary)',
-    lineHeight: 1.4
+    justifyContent: 'center',
+    cursor: 'pointer',
+    zIndex: 9999,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
   },
   footer: {
     padding: '24px 0 12px 0',
