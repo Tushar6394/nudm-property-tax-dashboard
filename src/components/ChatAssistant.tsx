@@ -6,6 +6,7 @@ import { askGemini } from '../services/gemini';
 interface ChatAssistantProps {
   properties: Property[];
   selectedCity: string;
+  isOpen?: boolean;
   onClose?: () => void;
 }
 
@@ -29,7 +30,7 @@ const createChatMessage = (sender: 'user' | 'ai', text: string): ChatMessage => 
   };
 };
 
-export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity, onClose }) => {
+export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity, isOpen, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -58,6 +59,16 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  // Scroll to bottom when the chat bubble is toggled open
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 150); // slight delay to align perfectly after slide-up finishes
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim()) return;

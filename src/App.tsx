@@ -132,16 +132,23 @@ function App() {
           />
         </div>
 
-        {/* Floating ChatAssistant Widget Card */}
-        {isChatOpen && (
-          <div style={styles.floatingChatContainer} className="slide-up">
-            <ChatAssistant
-              properties={properties}
-              selectedCity={selectedCity}
-              onClose={() => setIsChatOpen(false)}
-            />
-          </div>
-        )}
+        {/* Floating ChatAssistant Widget Card (Always mounted to preserve history, animated via CSS transition) */}
+        <div
+          style={{
+            ...styles.floatingChatContainer,
+            opacity: isChatOpen ? 1 : 0,
+            visibility: isChatOpen ? 'visible' : 'hidden',
+            transform: isChatOpen ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.95)',
+            pointerEvents: isChatOpen ? 'auto' : 'none'
+          }}
+        >
+          <ChatAssistant
+            properties={properties}
+            selectedCity={selectedCity}
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        </div>
 
         {/* Floating Circle Button Trigger */}
         <button
@@ -279,7 +286,8 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 9998,
     borderRadius: '16px',
     overflow: 'hidden',
-    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)'
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
+    transition: 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)'
   },
   floatingTriggerBtn: {
     position: 'fixed',
