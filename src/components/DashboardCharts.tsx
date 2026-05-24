@@ -156,7 +156,11 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
               <XAxis 
                 dataKey="city" 
-                tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 500 }}
+                interval={0}
+                tick={{ fill: 'var(--text-secondary)', fontSize: 10, fontWeight: 500 }}
+                angle={-30}
+                textAnchor="end"
+                height={55}
                 axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                 tickLine={false}
               />
@@ -220,7 +224,11 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
               <XAxis 
                 dataKey="city" 
-                tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 500 }}
+                interval={0}
+                tick={{ fill: 'var(--text-secondary)', fontSize: 10, fontWeight: 500 }}
+                angle={-30}
+                textAnchor="end"
+                height={55}
                 axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                 tickLine={false}
               />
