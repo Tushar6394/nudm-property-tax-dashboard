@@ -138,7 +138,7 @@ function App() {
             ...styles.floatingChatContainer,
             opacity: isChatOpen ? 1 : 0,
             visibility: isChatOpen ? 'visible' : 'hidden',
-            transform: isChatOpen ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.95)',
+            transform: isChatOpen ? 'translateY(0)' : 'translateY(16px)',
             pointerEvents: isChatOpen ? 'auto' : 'none'
           }}
         >
@@ -288,7 +288,8 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '16px',
     overflow: 'hidden',
     boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
-    transition: 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)'
+    transition: 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
+    willChange: 'transform, opacity'
   },
   floatingTriggerBtn: {
     position: 'fixed',
