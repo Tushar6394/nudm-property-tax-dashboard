@@ -176,8 +176,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <Bar 
                 dataKey="collection" 
                 name="Total Collection"
-                radius={[5, 5, 0, 0]}
-                barSize={26}
+                radius={[4, 4, 0, 0]}
+                barSize={18}
               >
                 {data.map((entry, index) => {
                   // Interactive selection styling: highlight active city and dim the rest
@@ -223,8 +223,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
             <BarChart
               data={data}
               margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
-              barGap={6}
-              barCategoryGap="35%"
+              barGap={3}
+              barCategoryGap="30%"
             >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
               <XAxis 
@@ -253,19 +253,19 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
                 wrapperStyle={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}
               />
               
-              <Bar dataKey="approved" name="Approved" fill="var(--success)" radius={[3, 3, 0, 0]} barSize={14}>
+              <Bar dataKey="approved" name="Approved" fill="var(--success)" radius={[3, 3, 0, 0]} barSize={8}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
                 })}
               </Bar>
-              <Bar dataKey="pending" name="Pending" fill="var(--warning)" radius={[3, 3, 0, 0]} barSize={14}>
+              <Bar dataKey="pending" name="Pending" fill="var(--warning)" radius={[3, 3, 0, 0]} barSize={8}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
                 })}
               </Bar>
-              <Bar dataKey="rejected" name="Rejected" fill="var(--danger)" radius={[3, 3, 0, 0]} barSize={14}>
+              <Bar dataKey="rejected" name="Rejected" fill="var(--danger)" radius={[3, 3, 0, 0]} barSize={8}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
@@ -277,7 +277,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
       </div>
 
       {/* Chart 3: Property Type Distribution Donut Chart (Dynamic Selection - Task 2 Enhancement) */}
-      <div style={styles.chartCard} className="glass-panel">
+      <div style={{ ...styles.chartCard, gridColumn: 'span 2' }} className="glass-panel">
         <div style={styles.chartHeader}>
           <h4 style={styles.chartTitle}>
             Property Type Distribution — {selectedCity === 'All Cities' ? 'All India Combined' : `${selectedCity} Municipality`}
@@ -339,9 +339,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+    gap: '24px',
     width: '100%',
     marginBottom: '28px'
   },

@@ -260,7 +260,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   dashboardGrid: {
     display: 'grid',
-    gridTemplateColumns: '3fr 2fr',
+    gridTemplateColumns: '1fr 360px',
     gap: '28px',
     alignItems: 'start',
     width: '100%',

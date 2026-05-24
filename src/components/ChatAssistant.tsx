@@ -220,7 +220,7 @@ const styles: Record<string, React.CSSProperties> = {
   chatContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: '560px',
+    height: '520px',
     width: '100%',
     overflow: 'hidden'
   },
