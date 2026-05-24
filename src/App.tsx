@@ -283,6 +283,7 @@ const styles: Record<string, React.CSSProperties> = {
     bottom: '100px',
     right: '30px',
     width: '380px',
+    height: '520px',
     zIndex: 9998,
     borderRadius: '16px',
     overflow: 'hidden',

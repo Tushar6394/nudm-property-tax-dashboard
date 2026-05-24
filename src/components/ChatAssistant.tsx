@@ -34,7 +34,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   // Dynamic context-aware preset questions based on selected city
   const presetQuestions = React.useMemo(() => {
@@ -55,17 +55,27 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
     ];
   }, [selectedCity]);
 
+  // Scroller helper that scrolls inside the container ONLY (prevents page-level scrolling or jumps)
+  const scrollToBottom = (behavior: 'smooth' | 'auto' = 'smooth') => {
+    if (viewportRef.current) {
+      viewportRef.current.scrollTo({
+        top: viewportRef.current.scrollHeight,
+        behavior
+      });
+    }
+  };
+
   // Scroll to bottom on new message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom('smooth');
   }, [messages, isTyping]);
 
   // Scroll to bottom when the chat bubble is toggled open
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 150); // slight delay to align perfectly after slide-up finishes
+        scrollToBottom('auto'); // Instant scroll on open so it is ready and doesn't lag or jump
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -136,7 +146,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
       </div>
 
       {/* Messages viewport */}
-      <div style={styles.viewport}>
+      <div style={styles.viewport} ref={viewportRef}>
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -180,7 +190,6 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Preset Questions Slider */}
@@ -194,8 +203,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
             <button
               key={idx}
               onClick={() => handleSendMessage(q.text)}
-              style={styles.presetBtn}
-              className="glass-panel"
+              className="preset-btn"
             >
               {q.label}
             </button>
@@ -374,17 +382,6 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '8px',
     overflowX: 'auto',
     paddingBottom: '4px'
-  },
-  presetBtn: {
-    padding: '6px 12px',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    color: 'var(--text-secondary)',
-    borderRadius: '20px',
-    border: '1px solid var(--border-color)',
-    background: 'rgba(255, 255, 255, 0.02)',
-    whiteSpace: 'nowrap',
-    cursor: 'pointer'
   },
   inputForm: {
     padding: '16px',

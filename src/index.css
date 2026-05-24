@@ -41,6 +41,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+button, select, input, a, .glass-panel {
   transition: background-color 0.2s, border-color 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -135,5 +138,32 @@ body {
 
 .slide-up {
   animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scoped styling for preset analytical query chips */
+.preset-btn {
+  padding: 6px 14px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.preset-btn:hover {
+  background: var(--primary-glow);
+  color: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.preset-btn:active {
+  transform: translateY(0);
 }
 
