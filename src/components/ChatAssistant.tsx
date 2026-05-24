@@ -163,8 +163,11 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
             <div
               style={{
                 ...styles.bubble,
-                background: msg.sender === 'user' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.03)',
-                border: msg.sender === 'user' ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid var(--border-color)',
+                background: msg.sender === 'user' ? 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)' : 'rgba(255, 255, 255, 0.04)',
+                border: msg.sender === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.06)',
+                borderLeft: msg.sender === 'ai' ? '3px solid var(--primary)' : undefined,
+                boxShadow: msg.sender === 'user' ? '0 4px 12px rgba(59, 130, 246, 0.25)' : 'none',
+                color: '#ffffff',
                 borderBottomLeftRadius: msg.sender === 'ai' ? '4px' : '16px',
                 borderBottomRightRadius: msg.sender === 'user' ? '4px' : '16px'
               }}
@@ -252,8 +255,9 @@ const styles: Record<string, React.CSSProperties> = {
     overflow: 'hidden',
     background: '#0d1426',
     border: '1px solid var(--border-color)',
+    borderTop: '3px solid var(--primary)',
     borderRadius: '16px',
-    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)'
+    boxShadow: '0 16px 48px rgba(0, 0, 0, 0.65)'
   },
   headerRightActions: {
     display: 'flex',
@@ -273,12 +277,12 @@ const styles: Record<string, React.CSSProperties> = {
     outline: 'none'
   },
   chatHeader: {
-    padding: '16px 20px',
+    padding: '18px 24px',
     borderBottom: '1px solid var(--border-color)',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    background: 'rgba(6, 9, 19, 0.2)'
+    background: 'linear-gradient(135deg, #0b1329 0%, #161e38 100%)'
   },
   headerInfo: {
     display: 'flex',
@@ -286,14 +290,15 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '12px'
   },
   avatarGlow: {
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
-    background: 'var(--primary-glow)',
+    width: '38px',
+    height: '38px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 0 10px var(--primary-glow)'
+    border: '1px solid rgba(6, 182, 212, 0.4)',
+    boxShadow: '0 0 12px var(--primary-glow)'
   },
   headerTitle: {
     fontSize: '0.92rem',
@@ -351,8 +356,10 @@ const styles: Record<string, React.CSSProperties> = {
   typingBubble: {
     padding: '12px 16px',
     borderRadius: '16px',
-    background: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid var(--border-color)',
+    borderBottomLeftRadius: '4px',
+    background: 'rgba(255, 255, 255, 0.04)',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
+    borderLeft: '3px solid var(--primary)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -388,12 +395,12 @@ const styles: Record<string, React.CSSProperties> = {
     paddingBottom: '4px'
   },
   inputForm: {
-    padding: '16px',
+    padding: '16px 20px',
     borderTop: '1px solid var(--border-color)',
     display: 'flex',
     gap: '12px',
     alignItems: 'center',
-    background: 'rgba(6, 9, 19, 0.3)'
+    background: '#0b101f'
   },
   inputField: {
     flex: 1,
@@ -410,11 +417,12 @@ const styles: Record<string, React.CSSProperties> = {
   sendBtn: {
     width: '42px',
     height: '42px',
-    borderRadius: '10px',
+    borderRadius: '50%',
     border: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
   }
 };
