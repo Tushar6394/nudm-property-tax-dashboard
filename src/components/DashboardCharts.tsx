@@ -157,10 +157,12 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <XAxis 
                 dataKey="city" 
                 interval={0}
-                tick={{ fill: 'var(--text-secondary)', fontSize: 10, fontWeight: 500 }}
-                angle={-30}
+                tick={{ fill: 'var(--text-secondary)', fontSize: 9, fontWeight: 500 }}
+                angle={-35}
                 textAnchor="end"
-                height={55}
+                dx={-6}
+                dy={4}
+                height={60}
                 axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                 tickLine={false}
               />
@@ -174,7 +176,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <Bar 
                 dataKey="collection" 
                 name="Total Collection"
-                radius={[6, 6, 0, 0]}
+                radius={[4, 4, 0, 0]}
+                barSize={18}
               >
                 {data.map((entry, index) => {
                   // Interactive selection styling: highlight active city and dim the rest
@@ -225,10 +228,12 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
               <XAxis 
                 dataKey="city" 
                 interval={0}
-                tick={{ fill: 'var(--text-secondary)', fontSize: 10, fontWeight: 500 }}
-                angle={-30}
+                tick={{ fill: 'var(--text-secondary)', fontSize: 9, fontWeight: 500 }}
+                angle={-35}
                 textAnchor="end"
-                height={55}
+                dx={-6}
+                dy={4}
+                height={60}
                 axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                 tickLine={false}
               />
@@ -246,19 +251,19 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
                 wrapperStyle={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}
               />
               
-              <Bar dataKey="approved" name="Approved" fill="var(--success)" radius={[3, 3, 0, 0]}>
+              <Bar dataKey="approved" name="Approved" fill="var(--success)" stackId="a" radius={[0, 0, 0, 0]} barSize={18}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
                 })}
               </Bar>
-              <Bar dataKey="pending" name="Pending" fill="var(--warning)" radius={[3, 3, 0, 0]}>
+              <Bar dataKey="pending" name="Pending" fill="var(--warning)" stackId="a" radius={[0, 0, 0, 0]} barSize={18}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
                 })}
               </Bar>
-              <Bar dataKey="rejected" name="Rejected" fill="var(--danger)" radius={[3, 3, 0, 0]}>
+              <Bar dataKey="rejected" name="Rejected" fill="var(--danger)" stackId="a" radius={[4, 4, 0, 0]} barSize={18}>
                 {data.map((entry, index) => {
                   const isSelected = selectedCity === 'All Cities' || entry.city.toLowerCase() === selectedCity.toLowerCase();
                   return <Cell key={`cell-${index}`} opacity={isSelected ? 1 : 0.35} />;
@@ -360,7 +365,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chartWrapper: {
     width: '100%',
-    height: '320px',
+    height: '350px',
     position: 'relative'
   },
   tooltipContainer: {
