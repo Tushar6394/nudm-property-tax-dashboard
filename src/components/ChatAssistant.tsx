@@ -7,8 +7,6 @@ interface ChatAssistantProps {
   properties: Property[];
   selectedCity: string;
   isOpen?: boolean;
-  chatSize: 'compact' | 'standard' | 'large';
-  onChangeSize: (size: 'compact' | 'standard' | 'large') => void;
   onClose?: () => void;
 }
 
@@ -32,7 +30,7 @@ const createChatMessage = (sender: 'user' | 'ai', text: string): ChatMessage => 
   };
 };
 
-export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity, isOpen, chatSize, onChangeSize, onClose }) => {
+export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, selectedCity, isOpen, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -138,42 +136,6 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ properties, select
           <div style={styles.sparkleContainer}>
             <Sparkles size={14} color="var(--primary)" />
             <span style={styles.sparkleLabel}>Gemini 1.5 Active</span>
-          </div>
-
-          <div style={styles.sizeController}>
-            <button
-              onClick={() => onChangeSize('compact')}
-              style={{
-                ...styles.sizeBtn,
-                background: chatSize === 'compact' ? 'var(--primary)' : 'rgba(255, 255, 255, 0.03)',
-                color: chatSize === 'compact' ? '#060913' : 'var(--text-secondary)'
-              }}
-              title="Compact Size (S)"
-            >
-              S
-            </button>
-            <button
-              onClick={() => onChangeSize('standard')}
-              style={{
-                ...styles.sizeBtn,
-                background: chatSize === 'standard' ? 'var(--primary)' : 'rgba(255, 255, 255, 0.03)',
-                color: chatSize === 'standard' ? '#060913' : 'var(--text-secondary)'
-              }}
-              title="Standard Size (M)"
-            >
-              M
-            </button>
-            <button
-              onClick={() => onChangeSize('large')}
-              style={{
-                ...styles.sizeBtn,
-                background: chatSize === 'large' ? 'var(--primary)' : 'rgba(255, 255, 255, 0.03)',
-                color: chatSize === 'large' ? '#060913' : 'var(--text-secondary)'
-              }}
-              title="Large Size (L)"
-            >
-              L
-            </button>
           </div>
 
           {onClose && (
@@ -463,27 +425,5 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
-  },
-  sizeController: {
-    display: 'flex',
-    background: 'rgba(0, 0, 0, 0.25)',
-    border: '1px solid var(--border-color)',
-    padding: '2px',
-    borderRadius: '8px',
-    gap: '2px',
-    alignItems: 'center'
-  },
-  sizeBtn: {
-    width: '24px',
-    height: '24px',
-    borderRadius: '6px',
-    border: 'none',
-    fontSize: '0.68rem',
-    fontWeight: 800,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
   }
 };
