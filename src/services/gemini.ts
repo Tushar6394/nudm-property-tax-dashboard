@@ -186,7 +186,7 @@ const localAiFallback = (question: string, properties: Property[], selectedCity:
 - **Global Collection:** ₹${totalCollection.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
 - **Status Split:** ${properties.filter(p => p.status === 'Approved').length} Approved, ${properties.filter(p => p.status === 'Rejected').length} Rejected, and ${properties.filter(p => p.status === 'Pending').length} Pending.
 
-*To activate the full semantic capability of Gemini 2.0 Flash, please create a \`.env\` file in the project root and add your API key: \`VITE_GEMINI_API_KEY=your_key_here\`.*`;
+*To activate the full semantic capability of Gemini 1.5 Flash, please create a \`.env\` file in the project root and add your API key: \`VITE_GEMINI_API_KEY=your_key_here\`.*`;
 };
 
 // Main API interface
@@ -201,7 +201,7 @@ export const askGemini = async (question: string, properties: Property[], select
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     
     const dataSummary = generateDataSummary(properties);
 
