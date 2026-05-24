@@ -23,9 +23,16 @@ const citiesList = [
   'Lucknow'
 ];
 
+const CHAT_SIZES = {
+  compact: { width: '360px', height: '480px' },
+  standard: { width: '440px', height: '600px' },
+  large: { width: '640px', height: '750px' }
+};
+
 function App() {
   const [selectedCity, setSelectedCity] = useState<string>('All Cities');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatSize, setChatSize] = useState<'compact' | 'standard' | 'large'>('standard');
 
   // 1. Filtered subset for KPI cards and specific details
   const filteredProperties = useMemo(() => {
@@ -136,6 +143,8 @@ function App() {
         <div
           style={{
             ...styles.floatingChatContainer,
+            width: CHAT_SIZES[chatSize].width,
+            height: CHAT_SIZES[chatSize].height,
             opacity: isChatOpen ? 1 : 0,
             visibility: isChatOpen ? 'visible' : 'hidden',
             transform: isChatOpen ? 'translateY(0)' : 'translateY(16px)',
@@ -146,6 +155,8 @@ function App() {
             properties={properties}
             selectedCity={selectedCity}
             isOpen={isChatOpen}
+            chatSize={chatSize}
+            onChangeSize={setChatSize}
             onClose={() => setIsChatOpen(false)}
           />
         </div>
@@ -282,8 +293,6 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'fixed',
     bottom: '100px',
     right: '30px',
-    width: '440px',
-    height: '600px',
     zIndex: 9998,
     borderRadius: '16px',
     overflow: 'hidden',
